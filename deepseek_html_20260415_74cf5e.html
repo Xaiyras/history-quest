@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра | История IT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Верхняя панель -->
+        <div class="game-header">
+            <div class="level-info">
+                <span class="level-badge" id="levelBadge">Уровень 1</span>
+                <span class="level-name" id="levelName">Механическая эра</span>
+            </div>
+            <div class="score-info">
+                <span>⭐ Баллы: <span id="scoreValue">0</span></span>
+            </div>
+        </div>
+
+        <!-- Прогресс-бар -->
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Вопрос -->
+        <div class="question-container">
+            <div class="question-text" id="questionText"></div>
+            <div class="question-image" id="questionImage"></div>
+        </div>
+
+        <!-- Варианты ответов -->
+        <div class="options-container" id="optionsContainer"></div>
+
+        <!-- Обратная связь -->
+        <div class="feedback" id="feedback"></div>
+
+        <!-- Кнопка Далее -->
+        <button id="nextBtn" class="btn next-btn" style="display: none;">➡ Далее</button>
+
+        <!-- Кнопка выхода -->
+        <button id="exitBtn" class="btn exit-btn">🏠 Выйти на главную</button>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>

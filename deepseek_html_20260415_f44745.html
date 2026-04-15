@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История IT: Веб-квест</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ История информатики ⚡</h1>
+            <h2>Веб-квест «Путешествие во времени»</h2>
+        </header>
+        
+        <main>
+            <div class="story-card">
+                <p>Вы — молодой исследователь, который случайно активировал машину времени. 
+                Теперь вам предстоит отправиться в прошлое и спасти ключевые технологические артефакты, 
+                чтобы вернуться обратно в своё время. Ответьте правильно на вопросы о великих учёных 
+                и изобретениях — и вы соберёте все артефакты!</p>
+                <p class="quest-goal">🎯 Цель: набрать 150 баллов, пройдя 5 уровней (по 3 вопроса в каждом).</p>
+            </div>
+            
+            <div class="buttons">
+                <button id="startBtn" class="btn primary">🚀 Начать квест</button>
+                <button id="rulesBtn" class="btn secondary">📖 Правила</button>
+                <button id="leaderboardBtn" class="btn secondary">🏆 Таблица лидеров</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Проектная работа ученика 10 класса</p>
+        </footer>
+    </div>
+
+    <!-- Модальное окно с правилами -->
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>📜 Правила игры</h3>
+            <ul>
+                <li>Квест состоит из 5 уровней по 3 вопроса в каждом.</li>
+                <li>За каждый правильный ответ вы получаете 10 баллов.</li>
+                <li>После ответа вы увидите пояснение — так вы сможете узнать новое.</li>
+                <li>Вы можете прервать игру и продолжить позже — прогресс сохранится.</li>
+                <li>После прохождения всех уровней ваш результат попадёт в таблицу лидеров.</li>
+                <li>Удачи! 🚀</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Модальное окно правил
+        const modal = document.getElementById('rulesModal');
+        const rulesBtn = document.getElementById('rulesBtn');
+        const closeBtn = document.querySelector('.close');
+        const startBtn = document.getElementById('startBtn');
+        const leaderboardBtn = document.getElementById('leaderboardBtn');
+
+        rulesBtn.onclick = function() {
+            modal.style.display = 'block';
+        }
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        startBtn.onclick = function() {
+            window.location.href = 'game.html';
+        }
+
+        leaderboardBtn.onclick = function() {
+            window.location.href = 'results.html';
+        }
+    </script>
+</body>
+</html>
