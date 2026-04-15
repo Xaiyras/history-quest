@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История IT: Веб-квест</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            color: #00d9ff;
+            text-shadow: 0 0 10px rgba(0,217,255,0.5);
+        }
+        header h2 {
+            font-size: 1.3rem;
+            color: #ccc;
+            margin-top: 10px;
+        }
+        .story-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .story-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .quest-goal {
+            background: rgba(0,217,255,0.2);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn.primary {
+            background: linear-gradient(135deg, #00d9ff, #0099cc);
+            color: white;
+        }
+        .btn.secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            background: #1a1a2e;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 500px;
+            border: 1px solid #00d9ff;
+        }
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #00d9ff;
+        }
+        .modal-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .modal-content li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #fff;
+        }
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .level-badge {
+            background: #00d9ff;
+            color: #1a1a2e;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .level-name {
+            margin-left: 10px;
+        }
+        .score-info {
+            font-size: 1.2rem;
+        }
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            width: 0%;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .question-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .question-image {
+            text-align: center;
+        }
+        .question-image img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 10px;
+        }
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .option-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option-btn:hover:not(:disabled) {
+            background: rgba(0,217,255,0.3);
+            transform: translateX(5px);
+        }
+        .option-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .feedback {
+            background: rgba(0,0,0,0.5);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .feedback .correct {
+            color: #00ff88;
+        }
+        .feedback .incorrect {
+            color: #ff4444;
+        }
+        .next-btn, .exit-btn {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .exit-btn {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        @media (max-width: 600px) {
+            .container, .game-container { padding: 15px; }
+            .question-text { font-size: 1rem; }
+            .option-btn { padding: 12px 15px; font-size: 0.9rem; }
+            .btn { padding: 10px 20px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- ГЛАВНАЯ СТРАНИЦА -->
+    <div id="mainPage" class="container">
+        <header>
+            <h1>⚡ История информатики ⚡</h1>
+            <h2>Веб-квест «Путешествие во времени»</h2>
+        </header>
+        <main>
+            <div class="story-card">
+                <p>Вы — молодой исследователь, который случайно активировал машину времени. Теперь вам предстоит отправиться в прошлое и спасти ключевые технологические артефакты, чтобы вернуться обратно в своё время. Ответьте правильно на вопросы о великих учёных и изобретениях — и вы соберёте все артефакты!</p>
+                <p class="quest-goal">🎯 Цель: набрать 150 баллов, пройдя 5 уровней (по 3 вопроса в каждом).</p>
+            </div>
+            <div class="buttons">
+                <button id="startBtn" class="btn primary">🚀 Начать квест</button>
+                <button id="rulesBtn" class="btn secondary">📖 Правила</button>
+                <button id="leaderboardBtn" class="btn secondary">🏆 Таблица лидеров</button>
+            </div>
+        </main>
+        <footer>
+            <p>Проектная работа ученика 10 класса</p>
+        </footer>
+    </div>
+
+    <!-- СТРАНИЦА ИГРЫ (скрыта) -->
+    <div id="gamePage" class="game-container" style="display: none;">
+        <div class="game-header">
+            <div class="level-info">
+                <span class="level-badge" id="levelBadge">Уровень 1</span>
+                <span class="level-name" id="levelName">Механическая эра</span>
+            </div>
+            <div class="score-info">
+                <span>⭐ Баллы: <span id="scoreValue">0</span></span>
+            </div>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="question-container">
+            <div class="question-text" id="questionText"></div>
+            <div class="question-image" id="questionImage"></div>
+        </div>
+        <div class="options-container" id="optionsContainer"></div>
+        <div class="feedback" id="feedback"></div>
+        <button id="nextBtn" class="btn next-btn" style="display: none;">➡ Далее</button>
+        <button id="exitBtn" class="btn exit-btn">🏠 Выйти на главную</button>
+    </div>
+
+    <!-- СТРАНИЦА РЕЗУЛЬТАТОВ (скрыта) -->
+    <div id="resultsPage" class="container results-container" style="display: none; text-align: center;">
+        <h1>🏆 Результаты 🏆</h1>
+        <div class="final-score-card" style="background: rgba(0,217,255,0.2); border-radius: 20px; padding: 30px; margin: 30px 0;">
+            <h2>Ваш итоговый счёт:</h2>
+            <div class="final-score" id="finalScore" style="font-size: 4rem; font-weight: bold; color: #00d9ff;">0</div>
+        </div>
+        <div class="leaderboard" style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 30px;">
+            <h3>📊 Таблица лидеров</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead><tr><th>Место</th><th>Имя</th><th>Баллы</th><th>Дата</th></tr></thead>
+                <tbody id="leaderboardBody"><tr><td colspan="4">Пока нет результатов</td></tr></tbody>
+            </table>
+        </div>
+        <div class="buttons">
+            <button id="playAgainBtn" class="btn primary">🔄 Пройти заново</button>
+            <button id="mainMenuBtn" class="btn secondary">🏠 Главное меню</button>
+        </div>
+    </div>
+
+    <div id="rulesModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>📜 Правила игры</h3>
+            <ul>
+                <li>Квест состоит из 5 уровней по 3 вопроса в каждом.</li>
+                <li>За каждый правильный ответ вы получаете 10 баллов.</li>
+                <li>После ответа вы увидите пояснение.</li>
+                <li>Прогресс сохраняется автоматически.</li>
+                <li>После прохождения всех уровней результат попадает в таблицу лидеров.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // ========== ВСЕ ВОПРОСЫ ==========
+        const questions = [
+            { id: 1, level: 1, levelName: "Механическая эра", questionText: "Кто считается первым программистом в истории?", options: ["Чарльз Бэббидж", "Ада Лавлейс", "Алан Тьюринг", "Джон фон Нейман"], correctAnswer: 1, explanation: "Ада Лавлейс написала первую программу для машины Бэббиджа.", points: 10 },
+            { id: 2, level: 1, levelName: "Механическая эра", questionText: "Как называлось устройство Бэббиджа — прообраз компьютера?", options: ["Разностная машина", "Аналитическая машина", "Паскалина", "Абак"], correctAnswer: 1, explanation: "Аналитическая машина имела память, процессор и ввод с перфокарт.", points: 10 },
+            { id: 3, level: 1, levelName: "Механическая эра", questionText: "Что изобрёл Блез Паскаль в 1642 году?", options: ["Абак", "Логарифмическую линейку", "Паскалину", "Арифмометр"], correctAnswer: 2, explanation: "Паскалина — первое механическое счётное устройство.", points: 10 },
+            { id: 4, level: 2, levelName: "Ламповые компьютеры", questionText: "Первый электронный компьютер ENIAC появился в:", options: ["1941", "1946", "1951", "1960"], correctAnswer: 1, explanation: "ENIAC построен в 1946 году в США.", points: 10 },
+            { id: 5, level: 2, levelName: "Ламповые компьютеры", questionText: "Принцип 'хранимой программы' предложил:", options: ["Тьюринг", "фон Нейман", "Цузе", "Бэббидж"], correctAnswer: 1, explanation: "Джон фон Нейман сформулировал этот принцип.", points: 10 },
+            { id: 6, level: 2, levelName: "Ламповые компьютеры", questionText: "Кто создал 'машину Тьюринга'?", options: ["Алан Тьюринг", "Клод Шеннон", "Джордж Буль", "Норберт Винер"], correctAnswer: 0, explanation: "Тьюринг — основатель теории алгоритмов.", points: 10 },
+            { id: 7, level: 3, levelName: "Транзисторы", questionText: "Что заменило радиолампы в 1947 году?", options: ["Микропроцессор", "Транзистор", "Интегральная схема", "Конденсатор"], correctAnswer: 1, explanation: "Транзистор изобрели в Bell Labs.", points: 10 },
+            { id: 8, level: 3, levelName: "Транзисторы", questionText: "Первый язык высокого уровня (1957):", options: ["COBOL", "LISP", "FORTRAN", "ALGOL"], correctAnswer: 2, explanation: "FORTRAN создан Джоном Бэкусом.", points: 10 },
+            { id: 9, level: 3, levelName: "Транзисторы", questionText: "Кто изобрёл интегральную схему?", options: ["Килби и Нойс", "Джобс и Возняк", "Гейтс и Аллен", "Мур и Нойс"], correctAnswer: 0, explanation: "Джек Килби и Роберт Нойс независимо друг от друга.", points: 10 },
+            { id: 10, level: 4, levelName: "Персональные компьютеры", questionText: "Основатели Apple:", options: ["Гейтс и Аллен", "Джобс и Возняк", "Пейдж и Брин", "Ритчи и Томпсон"], correctAnswer: 1, explanation: "Apple основана в 1976 году.", points: 10 },
+            { id: 11, level: 4, levelName: "Персональные компьютеры", questionText: "Какая ОС Microsoft стала популярной в 1990-х?", options: ["MS-DOS", "Windows", "Linux", "macOS"], correctAnswer: 1, explanation: "Windows 95 сделала компьютеры массовыми.", points: 10 },
+            { id: 12, level: 4, levelName: "Персональные компьютеры", questionText: "Создатель ядра Linux:", options: ["Столлман", "Торвальдс", "Реймонд", "Бернерс-Ли"], correctAnswer: 1, explanation: "Линус Торвальдс создал Linux в 1991 году.", points: 10 },
+            { id: 13, level: 5, levelName: "Современность", questionText: "Кто изобрёл WWW?", options: ["Андриссен", "Бернерс-Ли", "Серф", "Кайо"], correctAnswer: 1, explanation: "Тим Бернерс-Ли создал HTML, HTTP и первый браузер.", points: 10 },
+            { id: 14, level: 5, levelName: "Современность", questionText: "Создатель Python:", options: ["Java", "C++", "Python", "Ruby"], correctAnswer: 2, explanation: "Гвидо ван Россум создал Python в 1991 году.", points: 10 },
+            { id: 15, level: 5, levelName: "Современность", questionText: "Квантовые вычисления используют:", options: ["Биты", "Байты", "Кубиты", "Триты"], correctAnswer: 2, explanation: "Кубиты могут быть в суперпозиции 0 и 1 одновременно.", points: 10 }
+        ];
+
+        // Переменные
+        let currentPage = 'main';
+        let currentLevel = 1;
+        let currentLevelQuestions = [];
+        let currentQuestionIndex = 0;
+        let totalScore = 0;
+        let levelScores = {1:0,2:0,3:0,4:0,5:0};
+        let completedLevels = [];
+        let answered = false;
+
+        function showPage(page) {
+            document.getElementById('mainPage').style.display = 'none';
+            document.getElementById('gamePage').style.display = 'none';
+            document.getElementById('resultsPage').style.display = 'none';
+            if (page === 'main') document.getElementById('mainPage').style.display = 'flex';
+            if (page === 'game') document.getElementById('gamePage').style.display = 'block';
+            if (page === 'results') document.getElementById('resultsPage').style.display = 'block';
+            currentPage = page;
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('questProgress');
+            if (saved) {
+                const d = JSON.parse(saved);
+                currentLevel = d.currentLevel;
+                totalScore = d.totalScore;
+                levelScores = d.levelScores;
+                completedLevels = d.completedLevels;
+            }
+            updateUI();
+        }
+
+        function saveProgress() {
+            localStorage.setItem('questProgress', JSON.stringify({
+                currentLevel, totalScore, levelScores, completedLevels
+            }));
+        }
+
+        function loadLevel(level) {
+            currentLevelQuestions = questions.filter(q => q.level === level);
+            currentQuestionIndex = 0;
+            answered = false;
+            if (currentLevelQuestions.length) {
+                document.getElementById('levelName').textContent = currentLevelQuestions[0].levelName;
+            }
+            document.getElementById('levelBadge').textContent = `Уровень ${level}`;
+            renderQuestion();
+            updateProgressBar();
+        }
+
+        function renderQuestion() {
+            if (currentQuestionIndex >= currentLevelQuestions.length) {
+                completeLevel();
+                return;
+            }
+            const q = currentLevelQuestions[currentQuestionIndex];
+            document.getElementById('questionText').innerHTML = q.questionText;
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(idx);
+                container.appendChild(btn);
+            });
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('questionImage').innerHTML = '';
+            answered = false;
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (answered) return;
+            const q = currentLevelQuestions[currentQuestionIndex];
+            const isCorrect = (selectedIndex === q.correctAnswer);
+            const feedbackDiv = document.getElementById('feedback');
+            if (isCorrect) {
+                totalScore += q.points;
+                levelScores[currentLevel] += q.points;
+                feedbackDiv.innerHTML = `<div class="correct">✅ Правильно! ${q.explanation}</div>`;
+                updateUI();
+                saveProgress();
+            } else {
+                const correctText = q.options[q.correctAnswer];
+                feedbackDiv.innerHTML = `<div class="incorrect">❌ Неправильно. Правильный ответ: ${correctText}. ${q.explanation}</div>`;
+            }
+            feedbackDiv.style.display = 'block';
+            answered = true;
+            document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (!answered) return;
+            currentQuestionIndex++;
+            if (currentQuestionIndex < currentLevelQuestions.length) {
+                renderQuestion();
+            } else {
+                completeLevel();
+            }
+        }
+
+        function completeLevel() {
+            if (!completedLevels.includes(currentLevel)) {
+                completedLevels.push(currentLevel);
+                saveProgress();
+            }
+            if (currentLevel < 5) {
+                alert(`🎉 Уровень ${currentLevel} пройден! Переход к уровню ${currentLevel+1}`);
+                currentLevel++;
+                saveProgress();
+                loadLevel(currentLevel);
+            } else {
+                alert(`🏆 Поздравляем! Вы прошли квест!\nБаллы: ${totalScore} из 150`);
+                const name = prompt("Введите имя для таблицы рекордов:") || "Аноним";
+                saveToLeaderboard(name, totalScore);
+                localStorage.setItem('lastScore', totalScore);
+                showLeaderboard();
+                showPage('results');
+            }
+        }
+
+        function saveToLeaderboard(name, score) {
+            let lb = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            lb.push({ name, score, date: new Date().toLocaleDateString() });
+            lb.sort((a,b) => b.score - a.score);
+            lb = lb.slice(0,10);
+            localStorage.setItem('leaderboard', JSON.stringify(lb));
+        }
+
+        function showLeaderboard() {
+            const lb = JSON.parse(localStorage.getItem('leaderboard')) || [];
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            if (lb.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">Пока нет результатов</td></tr>';
+                return;
+            }
+            lb.slice(0,10).forEach((e,i) => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = i+1;
+                row.insertCell(1).textContent = e.name;
+                row.insertCell(2).textContent = e.score;
+                row.insertCell(3).textContent = e.date;
+            });
+            const finalScore = localStorage.getItem('lastScore');
+            if (finalScore) document.getElementById('finalScore').textContent = finalScore;
+        }
+
+        function updateUI() {
+            document.getElementById('scoreValue').textContent = totalScore;
+        }
+
+        function updateProgressBar() {
+            const total = currentLevelQuestions.length;
+            const progress = total ? (currentQuestionIndex / total) * 100 : 0;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+        }
+
+        function startGame() {
+            currentLevel = 1;
+            totalScore = 0;
+            levelScores = {1:0,2:0,3:0,4:0,5:0};
+            completedLevels = [];
+            localStorage.removeItem('questProgress');
+            saveProgress();
+            loadLevel(1);
+            showPage('game');
+        }
+
+        function exitGame() {
+            saveProgress();
+            showPage('main');
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            showPage('main');
+            document.getElementById('startBtn').onclick = startGame;
+            document.getElementById('rulesBtn').onclick = () => document.getElementById('rulesModal').style.display = 'block';
+            document.getElementById('leaderboardBtn').onclick = () => { showLeaderboard(); showPage('results'); };
+            document.getElementById('nextBtn').onclick = nextQuestion;
+            document.getElementById('exitBtn').onclick = exitGame;
+            document.getElementById('playAgainBtn').onclick = startGame;
+            document.getElementById('mainMenuBtn').onclick = () => showPage('main');
+            document.querySelector('.close').onclick = () => document.getElementById('rulesModal').style.display = 'none';
+            window.onclick = (e) => { if (e.target === document.getElementById('rulesModal')) document.getElementById('rulesModal').style.display = 'none'; };
+            loadProgress();
+        });
+    </script>
+</body>
+</html>
